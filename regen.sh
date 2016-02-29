@@ -17,6 +17,8 @@ then
 	exit 1
 fi
 
+dir=echo `dirname $0`
+
 for c in ${lets_public}/*.crt
 do
 	if [ ! -f "${c}" ]
@@ -25,7 +27,7 @@ do
 		exit 1
 	fi
 	b=`basename ${c} .crt`
-	./gen_one.sh ${b}
+	${dir}/gen_one.sh ${b}
 done
 
 for s in $@
