@@ -17,7 +17,7 @@ then
 	exit 1
 fi
 
-dir=echo `dirname $0`
+dir=`dirname $0`
 
 for c in ${lets_public}/*.crt
 do
