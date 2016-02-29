@@ -35,6 +35,13 @@ then
 	exit 1
 fi
 
+if [ ! -d ${challenges} ]
+then
+	echo "Challenge directory does not exist. You need to run, as root:"
+	echo "install -d -o $USERNAME -g wheel -m 0755 ${challenges}"
+	exit 1
+fi
+
 if [ ! -e ${lets_public}/intermediate.pem ]
 then
 	fetch -qo ${lets_public}/intermediate.pem https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem
@@ -43,7 +50,7 @@ fi
 cert=`mktemp`
 trap "rm -f ${cert}" EXIT
 
-/usr/local/bin/acme_tiny --account-key ${lets_private}/account.key --csr ${lets_private}/${name}.csr --acme-dir ~/challenges/ > ${cert}
+/usr/local/bin/acme_tiny --account-key ${lets_private}/account.key --csr ${lets_private}/${name}.csr --acme-dir ${challenges} > ${cert}
 
 cat ${cert} > ${lets_public}/${name}.crt
 cat ${cert} ${lets_public}/intermediate.pem > ${lets_public}/${name}.bundle
