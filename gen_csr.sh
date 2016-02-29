@@ -45,3 +45,5 @@ done
 echo "${output}" >> ${config}
 
 openssl req -new -sha256 -key ${lets_private}/${name}.key -subj "/" -reqexts SAN -config ${config} > ${lets_private}/${name}.csr
+
+chmod 444 ${lets_private}/${name}.csr

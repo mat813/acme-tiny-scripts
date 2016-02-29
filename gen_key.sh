@@ -21,3 +21,5 @@ then
 fi
 
 openssl genrsa 4096 > ${lets_private}/${name}.key
+
+chmod 444 ${lets_private}/${name}.key
