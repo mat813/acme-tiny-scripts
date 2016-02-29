@@ -1,0 +1,5 @@
+#!/bin/sh
+
+lets_private=/etc/ssl/private/letsencrypt
+lets_public=/etc/ssl/public/letsencrypt
+
