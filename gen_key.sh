@@ -14,10 +14,10 @@ name=$1
 
 shift
 
-if [ -e $lets_private/$name.key ]
+if [ -e ${lets_private}/${name}.key ]
 then
-	echo "Key already exists : $lets_private/$name.key"
+	echo "Key already exists : ${lets_private}/${name}.key"
 	exit 1
 fi
 
-openssl genrsa 4096 > $lets_private/$name.key
+openssl genrsa 4096 > ${lets_private}/${name}.key
