@@ -14,6 +14,13 @@ name=$1
 
 shift
 
+if [ ! -e ${lets_private}/account.key ]
+then
+	echo "Account key does not exist : ${lets_private}/account.key"
+	echo "Maybe run ./gen_key.sh account"
+	exit 1
+fi
+
 if [ ! -e ${lets_private}/${name}.key ]
 then
 	echo "Key does not exist : ${lets_private}/${name}.key"
