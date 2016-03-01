@@ -18,15 +18,15 @@ then
 	exit 1
 fi
 
-for c in ${lets_public}/*.crt
+for cert in ${lets_public}/*.crt
 do
-	if [ ! -f "${c}" ]
+	if [ ! -f "${cert}" ]
 	then
 		echo "No certificate to renew"
 		exit 1
 	fi
-	b=$(basename "${c}" .crt)
-	"${dir}"/gen_one.sh "${b}"
+	base=$(basename "${cert}" .crt)
+	"${dir}"/gen_one.sh "${base}"
 done
 
 for s in "$@"

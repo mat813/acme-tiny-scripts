@@ -14,21 +14,21 @@ STATE_DEPENDENT=4
 CRITICAL=25
 WARNING=50
 
-for c in ${lets_public}/*.crt
+for cert in ${lets_public}/*.crt
 do
-	if [ ! -f "${c}" ]
+	if [ ! -f "${cert}" ]
 	then
 		echo "No certificate to check"
 		exit ${STATE_UNKNOWN}
 	fi
-	if ! openssl x509 -in "${c}" -noout -checkend $((86400*WARNING))
+	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*WARNING))
 	then
-		b=$(basename "${c}" .crt)
-		if ! openssl x509 -in "${c}" -noout -checkend $((86400*CRITICAL))
+		base=$(basename "${cert}" .crt)
+		if ! openssl x509 -in "${cert}" -noout -checkend $((86400*CRITICAL))
 		then
-			warn="${warn} ${b}"
+			warn="${warn} ${base}"
 		else
-			crit="${crit} ${b}"
+			crit="${crit} ${base}"
 		fi
 	fi
 done

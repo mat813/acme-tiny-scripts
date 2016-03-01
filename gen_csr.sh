@@ -15,22 +15,26 @@ name=$1
 
 shift
 
-if [ ! -e "${lets_private}/${name}.key" ]
+key_name=${lets_private}/${name}.key
+csr_name=${lets_private}/${name}.csr
+
+if [ ! -e "${key_name}" ]
 then
-	echo "Key file does not exist : ${lets_private}/${name}.key"
+	echo "Key file does not exist : ${key_name}, generate it with"
+	echo "${dir}/gen_key.sh ${name}"
 	exit 1
 fi
 
-if [ -e "${lets_private}/${name}.csr" ]
+if [ -e "${csr_name}" ]
 then
-	echo "CSR already exists : ${lets_private}/${name}.csr"
+	echo "CSR already exists : ${csr_name}"
 	exit 1
 fi
 
 config=$(mktemp)
 trap 'rm -f ${config}' EXIT
 
-cat /etc/ssl/openssl.cnf > "${config}"
+cat "$ssl_config" > "${config}"
 
 echo "[SAN]" >> "${config}"
 
@@ -45,6 +49,6 @@ done
 
 echo "${output}" >> "${config}"
 
-openssl req -new -sha256 -key "${lets_private}/${name}.key" -subj "/" -reqexts SAN -config "${config}" > "${lets_private}/${name}.csr"
+openssl req -new -sha256 -key "${key_name}" -subj "/" -reqexts SAN -config "${config}" > "${csr_name}"
 
-chmod 444 "${lets_private}/${name}.csr"
+chmod 444 "${csr_name}"

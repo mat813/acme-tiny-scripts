@@ -15,12 +15,26 @@ name=$1
 
 shift
 
-if [ -e "${lets_private}/${name}.key" ]
+key_name=${lets_private}/${name}.key
+
+if [ ! -e "${lets_private}/account.key" -a "$name" != "account" ]
 then
-	echo "Key already exists : ${lets_private}/${name}.key"
+	echo "The account key does not exist, start by creating it, with:"
+	echo "${dir}/${0} account"
 	exit 1
 fi
 
-openssl genrsa 4096 > "${lets_private}/${name}.key"
+if [ -e "${key_name}" ]
+then
+	echo "Key already exists : ${key_name}"
+	exit 1
+fi
 
-chmod 444 "${lets_private}/${name}.key"
+openssl genrsa 4096 > "${key_name}"
+
+if [ "$name" != "account" ]
+then
+	chmod 444 "${key_name}"
+else
+	chmod 400 "${key_name}"
+fi

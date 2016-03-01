@@ -15,6 +15,9 @@ name=$1
 
 shift
 
+key_name=${lets_private}/${name}.key
+csr_name=${lets_private}/${name}.csr
+
 if [ ! -e "${lets_private}/account.key" ]
 then
 	echo "Account key does not exist : ${lets_private}/account.key"
@@ -22,24 +25,17 @@ then
 	exit 1
 fi
 
-if [ ! -e "${lets_private}/${name}.key" ]
+if [ ! -e "${key_name}" ]
 then
-	echo "Key does not exist : ${lets_private}/${name}.key"
+	echo "Key does not exist : ${key_name}"
 	echo "Maybe run ./gen_key.sh ${name}"
 	exit 1
 fi
 
-if [ ! -e "${lets_private}/${name}.csr" ]
+if [ ! -e "${csr_name}" ]
 then
-	echo "CSR does not exist : ${lets_private}/${name}.csr"
+	echo "CSR does not exist : ${csr_name}"
 	echo "Maybe run ./gen_csr.sh ${name} domains..."
-	exit 1
-fi
-
-if [ ! -d "${challenges}" ]
-then
-	echo "Challenge directory does not exist. You need to run, as root:"
-	echo "install -d -o $USERNAME -g wheel -m 0755 ${challenges}"
 	exit 1
 fi
 
@@ -51,7 +47,7 @@ fi
 cert=$(mktemp)
 trap 'rm -f ${cert}' EXIT
 
-/usr/local/bin/acme_tiny --account-key "${lets_private}/account.key" --csr "${lets_private}/${name}.csr" --acme-dir "${challenges}" > "${cert}"
+/usr/local/bin/acme_tiny --account-key "${lets_private}/account.key" --csr "${csr_name}" --acme-dir "${challenges}" > "${cert}"
 
 cat "${cert}" > "${lets_public}/${name}.crt"
 cat "${cert}" "${lets_public}/intermediate.pem" > "${lets_public}/${name}.bundle"
