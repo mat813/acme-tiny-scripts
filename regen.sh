@@ -2,7 +2,8 @@
 
 set -e
 
-. lets_path.sh
+dir=$(dirname "$0")
+. "${dir}"/lets_path.sh
 
 if [ $# -lt 1 ]
 then
@@ -16,8 +17,6 @@ then
 	echo "Maybe run ./gen_key.sh account"
 	exit 1
 fi
-
-dir=$(dirname "$0")
 
 for c in ${lets_public}/*.crt
 do

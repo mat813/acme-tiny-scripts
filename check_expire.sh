@@ -2,7 +2,8 @@
 
 set -e
 
-. lets_path.sh
+dir=$(dirname "$0")
+. "${dir}"/lets_path.sh
 
 STATE_OK=0
 STATE_WARNING=1

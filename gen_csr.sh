@@ -2,7 +2,8 @@
 
 set -e
 
-. lets_path.sh
+dir=$(dirname "$0")
+. "${dir}"/lets_path.sh
 
 if [ $# -lt 2 ]
 then
