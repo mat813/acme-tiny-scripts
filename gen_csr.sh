@@ -26,7 +26,7 @@ then
 	exit 1
 fi
 
-config=`mktemp`
+config=$(mktemp)
 trap 'rm -f ${config}' EXIT
 
 cat /etc/ssl/openssl.cnf > ${config}

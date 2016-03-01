@@ -17,7 +17,7 @@ then
 	exit 1
 fi
 
-dir=`dirname $0`
+dir=$(dirname $0)
 
 for c in ${lets_public}/*.crt
 do
@@ -26,7 +26,7 @@ do
 		echo "No certificate to renew"
 		exit 1
 	fi
-	b=`basename ${c} .crt`
+	b=$(basename ${c} .crt)
 	${dir}/gen_one.sh ${b}
 done
 

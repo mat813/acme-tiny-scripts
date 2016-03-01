@@ -47,7 +47,7 @@ then
 	fetch -qo ${lets_public}/intermediate.pem https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem
 fi
 
-cert=`mktemp`
+cert=$(mktemp)
 trap 'rm -f ${cert}' EXIT
 
 /usr/local/bin/acme_tiny --account-key ${lets_private}/account.key --csr ${lets_private}/${name}.csr --acme-dir ${challenges} > ${cert}

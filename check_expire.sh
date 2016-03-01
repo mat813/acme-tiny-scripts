@@ -22,7 +22,7 @@ do
 	fi
 	if ! openssl x509 -in ${c} -noout -checkend $((86400*WARNING))
 	then
-		b=`basename ${c} .crt`
+		b=$(basename ${c} .crt)
 		if ! openssl x509 -in ${c} -noout -checkend $((86400*CRITICAL))
 		then
 			warn="${warn} ${b}"
