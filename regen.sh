@@ -10,14 +10,14 @@ then
 	exit 1
 fi
 
-if [ ! -e ${lets_private}/account.key ]
+if [ ! -e "${lets_private}/account.key" ]
 then
 	echo "Account key does not exist : ${lets_private}/account.key"
 	echo "Maybe run ./gen_key.sh account"
 	exit 1
 fi
 
-dir=$(dirname $0)
+dir=$(dirname "$0")
 
 for c in ${lets_public}/*.crt
 do
@@ -26,11 +26,11 @@ do
 		echo "No certificate to renew"
 		exit 1
 	fi
-	b=$(basename ${c} .crt)
-	${dir}/gen_one.sh ${b}
+	b=$(basename "${c}" .crt)
+	"${dir}"/gen_one.sh "${b}"
 done
 
 for s in "$@"
 do
-	sudo /usr/sbin/service ${s} reload
+	sudo /usr/sbin/service "${s}" reload
 done
