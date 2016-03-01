@@ -20,10 +20,10 @@ do
 		echo "No certificate to check"
 		exit ${STATE_UNKNOWN}
 	fi
-	if ! openssl x509 -in ${c} -noout -checkend $((86400*${WARNING}))
+	if ! openssl x509 -in ${c} -noout -checkend $((86400*WARNING))
 	then
 		b=`basename ${c} .crt`
-		if ! openssl x509 -in ${c} -noout -checkend $((86400*${CRITICAL}))
+		if ! openssl x509 -in ${c} -noout -checkend $((86400*CRITICAL))
 		then
 			warn="${warn} ${b}"
 		else
