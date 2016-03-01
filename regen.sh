@@ -30,7 +30,7 @@ do
 	${dir}/gen_one.sh ${b}
 done
 
-for s in $@
+for s in "$@"
 do
 	sudo /usr/sbin/service ${s} reload
 done

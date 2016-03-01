@@ -37,7 +37,7 @@ output="subjectAltName=DNS:$1"
 
 shift
 
-for d in $@
+for d in "$@"
 do
 	output="${output},DNS:${d}"
 done
