@@ -1,12 +1,8 @@
 #!/bin/sh
 
-lets_private=/etc/ssl/private/letsencrypt
-lets_public=/etc/ssl/public/letsencrypt
-challenges=/usr/local/www/challenges
-ssl_config=/etc/ssl/openssl.cnf
+. "${dir}"/config.sh
 
-### DO NOT CHANGE ANYTHING AFTER HERE, UNDER PAIN OF DEATH.
-
+caller=$(basename "$0")
 my_id=$(id -u)
 
 if [ ! -d "${lets_private}" ]
@@ -16,7 +12,7 @@ then
 	ret=1
 fi
 
-if [ ! -w "${lets_private}" ]
+if [ "${caller}" != "check_expire.sh" -a ! -w "${lets_private}" ]
 then
 	echo "The private directory is not writable, as root, run:"
 	echo "chown ${my_id} ${lets_private}"
@@ -30,7 +26,7 @@ then
 	ret=1
 fi
 
-if [ ! -w "${lets_public}" ]
+if [ "${caller}" != "check_expire.sh" -a ! -w "${lets_public}" ]
 then
 	echo "The public directory is not writable, as root, run:"
 	echo "chown ${my_id} ${lets_public}"
@@ -44,7 +40,7 @@ then
 	ret=1
 fi
 
-if [ ! -w "${challenges}" ]
+if [ "${caller}" != "check_expire.sh" -a ! -w "${challenges}" ]
 then
 	echo "The challenge directory is not writable, as root, run:"
 	echo "chown ${my_id} ${challenges}"
