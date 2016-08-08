@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# default values
+lets_private=/etc/ssl/private/letsencrypt
+lets_public=/etc/ssl/public/letsencrypt
+challenges=/usr/local/www/challenges
+ssl_config=/etc/ssl/openssl.cnf
+
 . "${dir}"/config.sh
 
 caller=$(basename "$0")

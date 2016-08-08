@@ -1,7 +1,11 @@
 #!/bin/sh
 
+# Where to put private files (keys)
 lets_private=/etc/ssl/private/letsencrypt
+# Where to put public files (certificates, requests)
 lets_public=/etc/ssl/public/letsencrypt
+# Challenges directory
 challenges=/usr/local/www/challenges
+# SSL config
 ssl_config=/etc/ssl/openssl.cnf
 
