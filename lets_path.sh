@@ -6,6 +6,9 @@ lets_public=/etc/ssl/public/letsencrypt
 challenges=/usr/local/www/challenges
 ssl_config=/etc/ssl/openssl.cnf
 
+critical=10
+warning=15
+
 . "${dir}"/config.sh
 
 caller=$(basename "$0")

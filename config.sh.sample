@@ -9,3 +9,7 @@ challenges=/usr/local/www/challenges
 # SSL config
 ssl_config=/etc/ssl/openssl.cnf
 
+# Values when the check will get critical, and warning, in days
+critical=10
+warning=15
+
