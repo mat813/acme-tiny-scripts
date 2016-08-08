@@ -9,12 +9,12 @@ certificates using [acme-tiny](https://github.com/diafygi/acme-tiny/).
 ```
 git clone https://github.com/mat813/acme-tiny-scripts.git
 cd acme-tiny-scripts
-cp lets_path.sh.sample lets_path.sh
+cp config.sh.sample config.sh
 ```
 
-Edit the paths in the PATH section of `lets_path.sh` according to your
-installation.  All three path should be owned by the user running the scripts,
-the mode of the private path should be 0711.
+Edit the values in `config.sh` according to your installation.  All three path
+should be owned by the user running the scripts, the mode of the private path
+should be 0711.  The durations are in days.
 
 ## scripts
 
@@ -25,7 +25,7 @@ requests.  It takes only one argument, the name associated with the key.  The
 same name will be used for the certificate request, and the certificate.  In
 the end, you will get a `<name>.crt`
 
-When you first run everything, you must start by:
+*When you first run everything, you must start by:*
 
 ```shell
 $ ./gen_key.sh account
@@ -73,7 +73,8 @@ acme-tiny.py to get a valid certificate from Let's Encrypt.
 
 At this point, you need to have setup your web server to point the
 `/.well-known/acme-challenge/` directory to the challenge path of the
-configuration file.
+configuration file.  See [configuring your web
+server](#configuring-your-web-server) for more informations.
 
 ```shell
 $ ./gen_one.sh example
@@ -111,16 +112,90 @@ certificate, and the intermediate certificate from Let's Encrypt.  The
 intermediate certificate is also stored as intermediate.pem in the public
 directory.
 
+#### Configuring your web server
+
+First, note that Let's Encrypt will look for the challenge over *http* not
+https, so either your web server must be able to give the answer over http, or
+it must redirect to https, and in that case, the certificate must be valid.
+
+In the following examples, I will describe serving the challenges over http.  I
+prefer this method because it still works if your certificates are invalid, for
+example, if you let the expire.
+
+##### Apache
+
+To be able to serve the challenge over http, you only need to add an `Alias` directive
+
+```apache
+<VirtualHost *:80>
+        ServerName www.example.net
+        Alias /.well-known/acme-challenge/ /usr/local/www/challenges/
+	[rest of your VirtualHost configuration]
+</VirtualHost>
+```
+
+If your `VirtualHost` contains a `RedirectPermanent /
+https://www.examples.net/` then you will need to be a bit more subtle with how
+you configure things so that the challenges work:
+
+```apache
+<VirtualHost *:80>
+        ServerName www.example.net
+        Alias /.well-known/acme-challenge/ /usr/local/www/challenges/
+        RedirectMatch 301 ^(?!/\.well-known/acme-challenge/).* https://www.example.net$0
+</VirtualHost>
+```
+
+##### Nginx
+
+```nginx
+    server {
+        listen       *:80;
+        listen       [::]:80;
+        server_name  www.example.net;
+
+        location /.well-known/acme-challenge/ {
+            alias /usr/local/www/challenges/;
+            try_files $uri =404;
+        }
+
+	[rest of your server configuration]
+    }
+```
+
+If your server configuration contains a `return 301
+https://www.example.net$request_uri;` then you will need to bit a bit more
+subtle with how you configure things so that the challenges work:
+
+```nginx
+    server {
+        listen       *:80;
+        listen       [::]:80;
+        server_name  www.example.net;
+
+        location /.well-known/acme-challenge/ {
+            alias /usr/local/www/challenges/;
+            try_files $uri =404;
+        }
+
+        location / {
+                return 301 https://www.example.net$request_uri;
+        }
+    }
+```
+
 ### `regen.sh service [service...]`
 
-This script should be run, via cron, once a month, to regenerate the certificates.
+This script should be run, via cron, every day, to regenerate outdated
+certificates.  Certificates are considered outdated when their expiration date
+is less than $renew days from now, the default is 20 days.
 
-Before you add a cron entry with `0 0 1 * * /some/path/regen.sh`, I said once a
-month, not at midnight of the first day of the month.  If everybody does that,
-the Let's Encrypt servers will be hammered on the first of each months at the
-top of every hour, and won't do a thing on days 2 to 31.
+Before you add a cron entry with `0 0 * * * /some/path/regen.sh`.  I said once
+a day, not "at midnight".  If everybody does that, the Let's Encrypt servers
+will be hammered on the first of each months at the top of every hour, and
+won't do a thing on days 2 to 31.
 
-So, add a cron entry, with, say, `15 22 12 * * /some/path/regen.sh`, but not
+So, add a cron entry, with, say, `15 22 * * * /some/path/regen.sh`, but not
 that one either, choose your own.
 
 It also take as arguments the services to reload. (With the service command,
@@ -131,8 +206,9 @@ script to fit your needs.
 ### `check_expire.sh`
 
 This is a nagios plugin that will check that all the certificates in the public
-directory have an expiration date of at least 50 days in the future, give a
-warning if they have less, and become critical if it goes below 25 days.
+directory have an expiration date of at least $warning days in the future,
+default 15, give a warning if they have less, and become critical if it goes
+below $critical days, default 10.
 
 ## notes
 
