@@ -25,8 +25,10 @@ do
 		echo "No certificate to renew"
 		exit 1
 	fi
-	base=$(basename "${cert}" .crt)
-	"${dir}"/gen_one.sh "${base}"
+	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*renew)); then
+		base=$(basename "${cert}" .crt)
+		"${dir}"/gen_one.sh "${base}"
+	fi
 done
 
 for s in "$@"
