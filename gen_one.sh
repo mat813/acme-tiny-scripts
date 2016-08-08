@@ -39,10 +39,7 @@ then
 	exit 1
 fi
 
-if [ ! -e "${lets_public}/intermediate.pem" ]
-then
-	fetch -qo "${lets_public}/intermediate.pem" https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem
-fi
+fetch -qo "${lets_public}/intermediate.pem" https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
 
 cert=$(mktemp)
 trap 'rm -f ${cert}' EXIT
