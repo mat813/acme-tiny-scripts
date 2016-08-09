@@ -49,3 +49,4 @@ trap 'rm -f ${cert}' EXIT
 
 cat "${cert}" > "${lets_public}/${name}.crt"
 cat "${cert}" "${lets_public}/intermediate.pem" > "${lets_public}/${name}.bundle"
+openssl x509 -noout -text -in "${cert}" > "${lets_public}/${name}.txt"
