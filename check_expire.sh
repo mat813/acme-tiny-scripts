@@ -23,9 +23,9 @@ do
 		base=$(basename "${cert}" .crt)
 		if ! openssl x509 -in "${cert}" -noout -checkend $((86400*critical))
 		then
-			warn="${warn} ${base}"
-		else
 			crit="${crit} ${base}"
+		else
+			warn="${warn} ${base}"
 		fi
 	fi
 done
