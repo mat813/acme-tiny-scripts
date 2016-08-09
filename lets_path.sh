@@ -59,6 +59,18 @@ then
 	ret=1
 fi
 
+if [ "${critical}" -ge "${warning}" ]; then
+	echo "The critical value ${critical} is equal or greater than the warning value ${warning}"
+	echo "It must be strictly less."
+	ret=1
+fi
+
+if [ "${warning}" -ge "${renew}" ]; then
+	echo "The warning value ${warning} is equal or greater than the renew value ${renew}"
+	echo "It must be strictly less."
+	ret=1
+fi
+
 if [ -n "${ret}" ]
 then
 	exit 1
