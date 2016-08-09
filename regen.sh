@@ -31,7 +31,11 @@ do
 	fi
 done
 
-for s in "$@"
-do
-	sudo /usr/sbin/service "${s}" reload
-done
+# If base is set, it means we did renew at least one certificate, so, reload
+# the services.
+if [ -n "${base}" ]; then
+	for s in "$@"
+	do
+		sudo /usr/sbin/service "${s}" reload
+	done
+fi
