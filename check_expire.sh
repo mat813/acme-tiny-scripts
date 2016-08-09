@@ -1,4 +1,5 @@
 #!/bin/sh
+# vim:sw=8 sts=8
 
 set -e
 

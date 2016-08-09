@@ -1,4 +1,5 @@
 #!/bin/sh
+# vim:sw=8 sts=8
 
 # default values
 lets_private=/etc/ssl/private/letsencrypt
