@@ -66,6 +66,13 @@ $ openssl req -noout -text < /etc/ssl/private/letsencrypt/example.csr |grep DNS
                 DNS:examples.com, DNS:www.examples.com, DNS:examples.net, DNS:www.examples.net
 ```
 
+#### DANE/TLSA
+
+The script will also generate a /etc/ssl/public/letsencrypt/example.tlsa file
+with HTTPS TLSA (`_443._tcp.domain.`) records for all the domains passed as
+arguments.  If you are using the certificates for other purpose than HTTPS, you
+will only have to change the port number.
+
 ### `gen_one.sh name`
 
 This script uses the key and CSR generated during the previous steps and calls
