@@ -279,8 +279,7 @@ is less than $renew days from now, the default is 20 days.
 
 Before you add a cron entry with `0 0 * * * /some/path/regen.sh`.  I said once
 a day, not "at midnight".  If everybody does that, the Let's Encrypt servers
-will be hammered on the first of each months at the top of every hour, and
-won't do a thing on days 2 to 31.
+will be hammered at the top of every hour.
 
 So, add a cron entry, with, say, `15 22 * * * /some/path/regen.sh`, but not
 that one either, choose your own.
