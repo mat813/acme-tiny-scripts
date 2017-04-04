@@ -83,7 +83,7 @@ acme-tiny.py to get a valid certificate from Let's Encrypt.
 At this point, you need to have setup your web server to point the
 `/.well-known/acme-challenge/` directory to the challenge path of the
 configuration file.  See [configuring your web
-server](#configuring-your-web-server) for more informations.
+server](#configuring-your-web-server-for-letsencrypt) for more informations.
 
 ```shell
 $ ./gen_one.sh example
@@ -121,11 +121,11 @@ certificate, and the intermediate certificate from Let's Encrypt.  The
 intermediate certificate is also stored as intermediate.pem in the public
 directory.
 
-### Configuring your web server
+### Configuring your web server for letsencrypt
 
 First, note that Let's Encrypt will look for the challenge over *http* not
 https, so either your web server must be able to give the answer over http, or
-it must redirect to https, and in that case, the certificate must be valid.
+it must redirect to https, and in that case, *the certificate must be valid*.
 
 In the following examples, I will describe serving the challenges over http.  I
 prefer this method because it still works if your certificates are invalid, for
@@ -198,6 +198,78 @@ subtle with how you configure things so that the challenges work:
         }
     }
 ```
+
+## Configuring HTTPS on your web server
+
+There are dozens of howtos on how to configure HTTPS, I'm keeping this mostly
+for my own use :-)
+
+The `/etc/ssl/private/dhparam_4096.pem` file is generated with `openssl dhparam
+-out dhparam_4096.pem 4096`.
+
+
+### Apache
+
+#### In the main apache configuration
+
+*You must enable ssl_module and socache_shmcb_module.*
+
+```apache
+Listen 443
+<IfVersion >= 2.4>
+        <IfModule socache_shmcb_module>
+  	      SSLSessionCache        "shmcb:/tmp/ssl_scache(512000)"
+  	      SSLSessionCacheTimeout  300
+  	      SSLStaplingCache        "shmcb:/tmp/stapling_cache(2097152)"
+        </IfModule>
+</IfVersion>
+<IfVersion < 2.4>
+        SSLSessionCache        "shmcb:/tmp/ssl_scache(512000)"
+        SSLSessionCacheTimeout  300
+</IfVersion>
+```
+
+#### In each `VirtualHost`
+
+```apache
+SSLProtocol All -SSLv2 -SSLv3
+SSLHonorCipherOrder on
+SSLCipherSuite "HIGH:!aNULL:!MD5:!3DES:!CAMELLIA:!AES128"
+SSLEngine on
+<IfVersion >= 2.4>
+        SSLOpenSSLConfCmd DHParameters "/etc/ssl/private/dhparam_4096.pem"
+        SSLUseStapling on
+</IfVersion>
+
+SSLCertificateFile "/etc/ssl/public/letsencrypt/example.crt"
+SSLCertificateKeyFile "/etc/ssl/private/letsencrypt/example.key"
+SSLCertificateChainFile "/etc/ssl/public/letsencrypt/intermediate.pem"
+```
+
+### Nginx
+
+#### In each `server` section
+
+Remember to enable ssl and http2:
+
+```nginx
+listen       *:443 ssl http2;
+listen       [::]:443 ssl http2;
+
+ssl_certificate       /etc/ssl/public/letsencrypt/example.bundle;
+ssl_certificate_key   /etc/ssl/private/letsencrypt/example.key;
+
+ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+ssl_ciphers "HIGH:!aNULL:!MD5:!3DES:!CAMELLIA:!AES128";
+ssl_dhparam "/etc/ssl/private/dhparam_4096.pem";
+ssl_prefer_server_ciphers on;
+ssl_session_cache builtin:1000 shared:SSL:10m;
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_session_timeout 5m;
+
+```
+
 
 ## `regen.sh service [service...]`
 
