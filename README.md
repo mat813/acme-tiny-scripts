@@ -306,4 +306,4 @@ I am a FreeBSD user, so, all this works just fine on FreeBSD, YMMV.
 The `regen.sh` script is ran from cron, and it runs acme-tiny.  The
 acme-tiny script's shebang contains `/usr/bin/env python` so python must
 either be in cron's PATH, or you must change acme-tiny's shebang to point to
-the correct python PATH.
+the correct python PATH.  Also, it runs `sudo`, so, sudo must be in the PATH.
