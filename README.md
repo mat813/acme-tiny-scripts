@@ -4,7 +4,7 @@ This is a suite of tiny, auditable scripts that you can throw on your server to
 manage keys, certificate requests and [Let's Encrypt](https://letsencrypt.org/)
 certificates using [acme-tiny](https://github.com/diafygi/acme-tiny/).
 
-## installation
+# installation
 
 ```
 git clone https://github.com/mat813/acme-tiny-scripts.git
@@ -16,16 +16,18 @@ Edit the values in `config.sh` according to your installation.  All three path
 should be owned by the user running the scripts, the mode of the private path
 should be 0711.  The durations are in days.
 
-## scripts
+# scripts
 
-### `gen_key.sh name`
+## `gen_key.sh name`
 
 This script is used to generate keys for 1) the account, 2) the certificate and
 requests.  It takes only one argument, the name associated with the key.  The
 same name will be used for the certificate request, and the certificate.  In
 the end, you will get a `<name>.crt`
 
-*When you first run everything, you must start by:*
+*When you first run everything, you must generate an account key, it is not
+used by any certificate, only for communication between the scripts and
+letsencrypt.  Start by:*
 
 ```shell
 $ ./gen_key.sh account
@@ -47,7 +49,7 @@ e is 65537 (0x10001)
 $
 ```
 
-### `gen_csr.sh name domain [domain...]`
+## `gen_csr.sh name domain [domain...]`
 
 This script generates a Certificate Signing Request in the private directory.
 It takes two, or more, arguments, the first is the name, the same as the one
@@ -66,14 +68,14 @@ $ openssl req -noout -text < /etc/ssl/private/letsencrypt/example.csr |grep DNS
                 DNS:examples.com, DNS:www.examples.com, DNS:examples.net, DNS:www.examples.net
 ```
 
-#### DANE/TLSA
+### DANE/TLSA
 
 The script will also generate a /etc/ssl/public/letsencrypt/example.tlsa file
 with HTTPS TLSA (`_443._tcp.domain.`) records for all the domains passed as
 arguments.  If you are using the certificates for other purpose than HTTPS, you
-will only have to change the port number.
+will have to change the port number.
 
-### `gen_one.sh name`
+## `gen_one.sh name`
 
 This script uses the key and CSR generated during the previous steps and calls
 acme-tiny.py to get a valid certificate from Let's Encrypt.
@@ -119,7 +121,7 @@ certificate, and the intermediate certificate from Let's Encrypt.  The
 intermediate certificate is also stored as intermediate.pem in the public
 directory.
 
-#### Configuring your web server
+### Configuring your web server
 
 First, note that Let's Encrypt will look for the challenge over *http* not
 https, so either your web server must be able to give the answer over http, or
@@ -129,7 +131,7 @@ In the following examples, I will describe serving the challenges over http.  I
 prefer this method because it still works if your certificates are invalid, for
 example, if you let the expire.
 
-##### Apache
+#### Apache
 
 To be able to serve the challenge over http, you only need to add an `Alias` directive
 
@@ -137,6 +139,9 @@ To be able to serve the challenge over http, you only need to add an `Alias` dir
 <VirtualHost *:80>
         ServerName www.example.net
         Alias /.well-known/acme-challenge/ /usr/local/www/challenges/
+	<Directory /usr/local/www/challenges/>
+		Require all granted
+	</Directory>
 	[rest of your VirtualHost configuration]
 </VirtualHost>
 ```
@@ -149,11 +154,14 @@ you configure things so that the challenges work:
 <VirtualHost *:80>
         ServerName www.example.net
         Alias /.well-known/acme-challenge/ /usr/local/www/challenges/
+	<Directory /usr/local/www/challenges/>
+		Require all granted
+	</Directory>
         RedirectMatch 301 ^(?!/\.well-known/acme-challenge/).* https://www.example.net$0
 </VirtualHost>
 ```
 
-##### Nginx
+#### Nginx
 
 ```nginx
     server {
@@ -191,7 +199,7 @@ subtle with how you configure things so that the challenges work:
     }
 ```
 
-### `regen.sh service [service...]`
+## `regen.sh service [service...]`
 
 This script should be run, via cron, every day, to regenerate outdated
 certificates.  Certificates are considered outdated when their expiration date
@@ -210,18 +218,18 @@ that may, or may not, exist, on your OS.)
 It also uses sudo to run the commands, but you may tinker with the end of that
 script to fit your needs.
 
-### `check_expire.sh`
+## `check_expire.sh`
 
 This is a nagios plugin that will check that all the certificates in the public
 directory have an expiration date of at least $warning days in the future,
 default 15, give a warning if they have less, and become critical if it goes
 below $critical days, default 10.
 
-## notes
+# notes
 
 I am a FreeBSD user, so, all this works just fine on FreeBSD, YMMV.
 
-## /!\ caveats /!\
+# /!\ caveats /!\
 
 The `regen.sh` script is ran from cron, and it runs acme-tiny.  The
 acme-tiny script's shebang contains `/usr/bin/env python` so python must
