@@ -16,6 +16,13 @@ renew=20
 caller=$(basename "$0")
 my_id=$(id -u)
 
+if [ ${my_id} -eq 0 -a -z "${BOW_BEFORE_ME_FOR_I_AM_ROOT}" ]
+then
+	echo "Running as root, which you should not, ever, do."
+	echo "Please log in as the acme user and try again."
+	exit 1
+fi
+
 if [ ! -d "${lets_private}" ]
 then
 	echo "Private directory does not exist. You need to run, as root:"
