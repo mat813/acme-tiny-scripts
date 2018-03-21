@@ -26,6 +26,15 @@ then
 	exit 1
 fi
 
+dirname=$(dirname "${lets_public}/${name}")
+
+if ! mkdir -p "${dirname}"
+then
+	echo "Directory ${dirname} cannot be created, run:"
+	echo "install -d -o acme ${dirname}"
+	exit 1
+fi
+
 if [ -e "${csr_name}" ]
 then
 	echo "CSR already exists : ${csr_name}"

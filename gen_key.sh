@@ -17,11 +17,19 @@ name=$1
 shift
 
 key_name=${lets_private}/${name}.key
+dirname=$(dirname "${key_name}")
 
 if [ ! -e "${lets_private}/account.key" -a "$name" != "account" ]
 then
 	echo "The account key does not exist, start by creating it, with:"
 	echo "${dir}/${0} account"
+	exit 1
+fi
+
+if ! mkdir -p "${dirname}"
+then
+	echo "Directory ${dirname} cannot be created, run:"
+	echo "install -d -o acme ${dirname}"
 	exit 1
 fi
 

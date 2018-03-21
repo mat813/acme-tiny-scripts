@@ -14,7 +14,7 @@ STATE_DEPENDENT=4
 
 crts=0
 
-for cert in ${lets_public}/*.crt
+for cert in $(find ${lets_public} -name '*.crt')
 do
 	if [ ! -f "${cert}" ]
 	then

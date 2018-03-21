@@ -19,7 +19,7 @@ then
 	exit 1
 fi
 
-for cert in ${lets_public}/*.crt
+for cert in $(find ${lets_public} -name '*.crt')
 do
 	if [ ! -f "${cert}" ]
 	then
@@ -27,7 +27,8 @@ do
 		exit 1
 	fi
 	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*renew)); then
-		base=$(basename "${cert}" .crt)
+		base=${cert#${lets_public}/}
+		base=${base%.crt}
 		"${dir}"/gen_one.sh "${base}"
 	fi
 done
