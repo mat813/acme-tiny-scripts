@@ -9,6 +9,10 @@ challenges=/usr/local/www/challenges
 # SSL config
 ssl_config=/etc/ssl/openssl.cnf
 
+# certbot dns hooks, see certbot's help
+dns_auth_hook=/some/script
+dns_cleanup_hook=/some/script
+
 # Values when the check will get critical, and warning, in days
 critical=10
 warning=15

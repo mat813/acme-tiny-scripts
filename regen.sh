@@ -29,7 +29,14 @@ do
 	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*renew)); then
 		base=${cert#${lets_public}/}
 		base=${base%.crt}
-		"${dir}"/gen_one.sh "${base}"
+		case "${base}" in
+			dns/*)
+				"${dir}"/gen_one_dns.sh "${base}"
+				;;
+			*)
+				"${dir}"/gen_one.sh "${base}"
+				;;
+		esac
 	fi
 done
 
