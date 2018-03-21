@@ -12,6 +12,8 @@ STATE_CRITICAL=2
 STATE_UNKNOWN=3
 STATE_DEPENDENT=4
 
+crts=0
+
 for cert in ${lets_public}/*.crt
 do
 	if [ ! -f "${cert}" ]
@@ -19,6 +21,7 @@ do
 		echo "No certificate to check"
 		exit ${STATE_UNKNOWN}
 	fi
+	crts=$((crts+1))
 	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*warning))
 	then
 		base=$(basename "${cert}" .crt)
@@ -43,5 +46,5 @@ then
 	exit ${STATE_WARNING}
 fi
 
-echo "All certificates expire in more than ${warning} days."
+echo "${crts} certificates expire in more than ${warning} days."
 exit ${STATE_OK}
