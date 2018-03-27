@@ -8,24 +8,8 @@ dir=$(dirname "$0")
 
 echo '-------------------------------------------------------------------------------'
 echo 'Found the following certs:'
-#  Certificate Name: owncloud.absolight.fr
-#    Domains: owncloud.absolight.fr owncloud.absolight.net
-#    Expiry Date: 2018-05-10 13:22:03+00:00 (VALID: 44 days)
-#    Certificate Path: /usr/local/etc/letsencrypt/live/owncloud.absolight.fr/fullchain.pem
-#    Private Key Path: /usr/local/etc/letsencrypt/live/owncloud.absolight.fr/privkey.pem
-#  Certificate Name: star.absolight.fr
-#    Domains: *.absolight.fr *.absolight.com *.absolight.net absolight.com absolight.fr absolight.net
-#    Expiry Date: 2018-06-18 10:37:48+00:00 (VALID: 83 days)
-#    Certificate Path: /usr/local/etc/letsencrypt/live/star.absolight.fr/fullchain.pem
-#    Private Key Path: /usr/local/etc/letsencrypt/live/star.absolight.fr/privkey.pem
-#  Certificate Name: star.mat.cc
-#    Domains: mat.cc *.mat.cc
-#    Expiry Date: 2018-06-18 10:42:37+00:00 (VALID: 83 days)
-#    Certificate Path: /usr/local/etc/letsencrypt/live/star.mat.cc/fullchain.pem
-#    Private Key Path: /usr/local/etc/letsencrypt/live/star.mat.cc/privkey.pem
-#-------------------------------------------------------------------------------
 
-find "${lets_public}" -name '*.crt' | while read -r cert
+find -s "${lets_public}" -name '*.crt' | while read -r cert
 do
 	base=${cert#${lets_public}/}
 	domains=$(openssl x509 -noout -in "${cert}" -text|xargs -n 1|sed -ne 's/,$//; s/DNS://p;'|xargs)
