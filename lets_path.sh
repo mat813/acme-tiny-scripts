@@ -16,7 +16,7 @@ renew=20
 caller=$(basename "$0")
 my_id=$(id -u)
 
-if [ ${my_id} -eq 0 -a -z "${BOW_BEFORE_ME_FOR_I_AM_ROOT}" ]
+if [ "${my_id}" -eq 0 ] && [ -z "${BOW_BEFORE_ME_FOR_I_AM_ROOT}" ]
 then
 	echo "Running as root, which you should not, ever, do."
 	echo "Please log in as the acme user and try again."
@@ -28,7 +28,7 @@ then
 	echo "Private directory does not exist. You need to run, as root:"
 	echo "install -d -o ${my_id} -g 0 -m 0711 ${lets_private}"
 	ret=1
-elif [ "${caller}" != "check_expire.sh" -a ! -w "${lets_private}" ]
+elif [ "${caller}" != "check_expire.sh" ] && [ ! -w "${lets_private}" ]
 then
 	echo "The private directory is not writable, as root, run:"
 	echo "chown ${my_id} ${lets_private}"
@@ -40,7 +40,7 @@ then
 	echo "Public directory does not exist. You need to run, as root:"
 	echo "install -d -o ${my_id} -g 0 -m 0755 ${lets_public}"
 	ret=1
-elif [ "${caller}" != "check_expire.sh" -a ! -w "${lets_public}" ]
+elif [ "${caller}" != "check_expire.sh" ] && [ ! -w "${lets_public}" ]
 then
 	echo "The public directory is not writable, as root, run:"
 	echo "chown ${my_id} ${lets_public}"
@@ -52,7 +52,7 @@ then
 	echo "Challenge directory does not exist. You need to run, as root:"
 	echo "install -d -o ${my_id} -g 0 -m 0755 ${challenges}"
 	ret=1
-elif [ "${caller}" != "check_expire.sh" -a ! -w "${challenges}" ]
+elif [ "${caller}" != "check_expire.sh" ] && [ ! -w "${challenges}" ]
 then
 	echo "The challenge directory is not writable, as root, run:"
 	echo "chown ${my_id} ${challenges}"

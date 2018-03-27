@@ -19,7 +19,7 @@ then
 	exit 1
 fi
 
-for cert in $(find ${lets_public} -name '*.crt')
+for cert in $(find "${lets_public}" -name '*.crt')
 do
 	if [ ! -f "${cert}" ]
 	then

@@ -66,7 +66,7 @@ trap 'rm -f ${cert} ${cert}.chain ${cert}.bundle' EXIT
 	--agree-tos \
 	--server https://acme-v02.api.letsencrypt.org/directory \
 	--preferred-challenges=dns \
-	--config-dir ${lets_private}/dns \
+	--config-dir "${lets_private}/dns" \
 	--work-dir /var/db/letsencrypt/dns \
 	--logs-dir /var/log/letsencrypt/dns \
 	--manual-auth-hook "${dns_auth_hook}" \
@@ -76,8 +76,8 @@ trap 'rm -f ${cert} ${cert}.chain ${cert}.bundle' EXIT
 	--chain-path "${cert}.chain" \
 	--fullchain-path "${cert}.bundle"
 
-cat ${cert} > "${lets_public}/dns/${name}.crt"
-cat ${cert}.chain > "${lets_public}/dns/${name}.chain"
-cat ${cert}.bundle > "${lets_public}/dns/${name}.bundle"
+cat "${cert}" > "${lets_public}/dns/${name}.crt"
+cat "${cert}.chain" > "${lets_public}/dns/${name}.chain"
+cat "${cert}.bundle" > "${lets_public}/dns/${name}.bundle"
 
 openssl x509 -noout -text -in "${cert}" > "${lets_public}/dns/${name}.txt"
