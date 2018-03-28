@@ -99,10 +99,9 @@ then
 			if ! cmp -s "${tmp}" "${file}"
 			then
 				mkdir -p "$(dirname "${file}")"
-				mv "${tmp}" "${file}"
-			else
-				rm -f "${tmp}"
+				cat "${tmp}" > "${file}"
 			fi
+			rm -f "${tmp}"
 		else
 			echo "${name}.${ext} not found"
 		fi
