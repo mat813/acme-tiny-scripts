@@ -13,6 +13,11 @@ ssl_config=/etc/ssl/openssl.cnf
 dns_auth_hook=/some/script
 dns_cleanup_hook=/some/script
 
+# Only set those if on a slave
+dns_url=https://dnssec.absolight.fr/
+dns_login=
+dns_password=
+
 # Values when the check will get critical, and warning, in days
 critical=10
 warning=15
