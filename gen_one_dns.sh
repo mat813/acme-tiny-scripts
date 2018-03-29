@@ -100,6 +100,10 @@ then
 			then
 				mkdir -p "$(dirname "${file}")"
 				cat "${tmp}" > "${file}"
+				if [ "${ext}" = crt ]
+				then
+					openssl x509 -noout -text -in "${crt_name}" > "${txt_name}"
+				fi
 			fi
 			rm -f "${tmp}"
 		else
