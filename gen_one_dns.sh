@@ -21,10 +21,10 @@ csr_name=${lets_private}/${name}.csr
 
 if [ -x "${dns_auth_hook}" ] && [ -x "${dns_cleanup_hook}" ]
 then
-	crt_name=${lets_public}/${name}.crt
-	chain_name=${lets_public}/${name}.chain
-	bundle_name=${lets_public}/${name}.bundle
-	txt_name=${lets_public}/${name}.txt
+	crt_name=${lets_public}/dns/${name}.crt
+	chain_name=${lets_public}/dns/${name}.chain
+	bundle_name=${lets_public}/dns/${name}.bundle
+	txt_name=${lets_public}/dns/${name}.txt
 
 	if [ ! -e "${lets_private}/account.key" ]
 	then
