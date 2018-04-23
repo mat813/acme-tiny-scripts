@@ -96,7 +96,7 @@ then
 		if curl --fail --silent -o "${tmp}"  --user "${dns_login}:${dns_password}"  "${dns_url}/${name}.${ext}"
 		then
 			eval file='${'${ext}'_name}'
-			if [ ! -s "${tmp}" ]
+			if [ ! -s "${tmp}" ]
 			then
 				echo "file ${name}.${ext} empty !"
 				continue
