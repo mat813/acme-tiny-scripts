@@ -31,7 +31,7 @@ do
 		base=${base%.crt}
 		case "${base}" in
 			dns/*)
-				"${dir}"/gen_one_dns.sh "${base}"
+				"${dir}"/gen_one_dns.sh "${base#dns/}"
 				;;
 			*)
 				"${dir}"/gen_one.sh "${base}"
