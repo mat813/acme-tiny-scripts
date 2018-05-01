@@ -5,6 +5,26 @@ set -e
 
 dir=$(dirname "$0")
 . "${dir}"/lets_path.sh
+. "${dir}"/config.sh
+
+if [ -t 1 ]
+then
+	NC='\033[0m'
+	RED='\033[0;31m'
+	LRED='\033[1;31m'
+	GREEN='\033[0;32m'
+	LGREEN='\033[1;32m'
+	ORANGE='\033[0;33m'
+	LORANGE='\033[1;33m'
+	BLUE='\033[0;34m'
+	LBLUE='\033[1;34m'
+	PURPLE='\033[0;35m'
+	LPURPLE='\033[1;35m'
+	CYAN='\033[0;36m'
+	LCYAN='\033[1;36m'
+	GRAY='\033[0;37m'
+	WHITE='\033[1;37m'
+fi
 
 echo '-------------------------------------------------------------------------------'
 echo 'Found the following certs:'
@@ -17,25 +37,33 @@ do
 	seconds=$(LANG=C date -j -f "%b %d %T %Y GMT" "${endDate}" +%s)
 	remain=$((seconds-$(date +%s)))
 
-	printf "  Certificate Name: %s\\n"  "${base%.crt}"
-	printf "    Domains: %s\\n" "${domains}"
-	if [ $remain -ge 172800 ]
+	printf "  Certificate Name: ${LBLUE}%s${NC}\\n"  "${base%.crt}"
+	printf "    Domains: ${GRAY}%s${NC}\\n" "${domains}"
+	printf "    Expiry Date: %s " "${endDate}"
+	if [ $remain -ge $((renew*86400)) ]
 	then
-		printf "    Expiry Date: %s (VALID: %d days)\\n" "${endDate}" $((remain/86400))
+		printf " ${GREEN}(VALID: %d days)${NC}\\n" $((remain/86400))
+	elif [ $remain -ge $((warning*86400)) ]
+	then
+		printf " ${LORANGE}(VALID: %d days)${NC}\\n" $((remain/86400))
+	elif [ $remain -ge $((warning*86400)) ]
+	then
+		printf " ${ORANGE}(VALID: %d days)${NC}\\n" $((remain/86400))
+	elif [ $remain -ge $((critical*86400)) ]
+	then
+		printf " ${RED}(VALID: %d days)${NC}\\n" $((remain/86400))
 	elif [ $remain -ge 0 ]
 	then
-		printf "    Expiry Date: %s (VALID: %d hours)\\n" "${endDate}" $((remain/3600))
+		printf "${RED}(VALID: %d hours)${NC}\\n" $((remain/3600))
 	else
-		printf "    Expiry Date: %s (INVALID)\\n" "${endDate}"
+		printf "${LRED}(INVALID)${NC}\\n"
 	fi
-	printf "    Certificate Path: %s\\n" "${cert}"
-	if [ "${base}" = "${base#dns/}" ]
+	if [ "${base}" != "${base#dns/}" ]
 	then
-		printf "    Private Key Path: %s/%s.key\\n" "${lets_private}" "${base%.crt}"
-	else
 		base=${base#dns/}
-		printf "    Private Key Path: %s/%s.key\\n" "${lets_private}" "${base%.crt}"
 	fi
+	printf "    Certificate Path: ${PURPLE}%s${NC}\\n" "${cert}"
+	printf "    Private Key Path: ${PURPLE}%s/%s.key${NC}\\n" "${lets_private}" "${base%.crt}"
 done
 
 echo '-------------------------------------------------------------------------------'
