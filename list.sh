@@ -37,7 +37,7 @@ do
 	seconds=$(LANG=C date -j -f "%b %d %T %Y GMT" "${endDate}" +%s)
 	remain=$((seconds-$(date +%s)))
 
-	printf "  Certificate Name: ${LBLUE}%s${NC}\\n"  "${base%.crt}"
+	printf "  Certificate Name: ${BLUE}%s${NC}\\n"  "${base%.crt}"
 	printf "    Domains: ${GRAY}%s${NC}\\n" "${domains}"
 	printf "    Expiry Date: %s " "${endDate}"
 	if [ $remain -ge $((renew*86400)) ]
