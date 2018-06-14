@@ -32,6 +32,7 @@ echo 'Found the following certs:'
 find -s "${lets_public}" -name '*.crt' | while read -r cert
 do
 	base=${cert#${lets_public}/}
+	base=${base#dns/}
 	domains=$(openssl x509 -noout -in "${cert}" -text|xargs -n 1|sed -ne 's/,$//; s/DNS://p;'|xargs)
 	endDate=$(openssl x509 -noout -in "${cert}" -enddate|sed -e 's/notAfter=//')
 	seconds=$(LANG=C date -j -f "%b %d %T %Y GMT" "${endDate}" +%s)
@@ -57,10 +58,6 @@ do
 		printf "${RED}(VALID: %d hours)${NC}\\n" $((remain/3600))
 	else
 		printf "${LRED}(INVALID)${NC}\\n"
-	fi
-	if [ "${base}" != "${base#dns/}" ]
-	then
-		base=${base#dns/}
 	fi
 	printf "    Certificate Path: ${PURPLE}%s${NC}\\n" "${cert}"
 	printf "    Private Key Path: ${PURPLE}%s/%s.key${NC}\\n" "${lets_private}" "${base%.crt}"
