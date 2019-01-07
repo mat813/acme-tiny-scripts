@@ -22,10 +22,10 @@ do
 		exit ${STATE_UNKNOWN}
 	fi
 	crts=$((crts+1))
-	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*warning))
+	if ! openssl x509 -in "${cert}" -noout -checkend $((86400*warning)) > /dev/null
 	then
 		base=$(basename "${cert}" .crt)
-		if ! openssl x509 -in "${cert}" -noout -checkend $((86400*critical))
+		if ! openssl x509 -in "${cert}" -noout -checkend $((86400*critical)) > /dev/null
 		then
 			crit="${crit} ${base}"
 		else
