@@ -63,7 +63,6 @@ then
 		--manual \
 		--non-interactive \
 		--quiet \
-		--manual-public-ip-logging-ok \
 		--agree-tos \
 		--server https://acme-v02.api.letsencrypt.org/directory \
 		--preferred-challenges=dns \
